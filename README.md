@@ -1,6 +1,6 @@
 # Project Style Guideline
 
-## 1 General Rules
+## 1. General Rules
 
 * Everything should be in **English**.
 * You should strictly follow this guideline.
@@ -12,12 +12,13 @@
   * Don't steal content
   * Follow licensing restrictions on content, e.g. attribute when attributions are needed
 
-## 2 Code
+## 2. C++ Code: [Epic's Coding Standard](https://docs.unrealengine.com/latest/INT/Programming/Development/CodingStandard)
 
 ### 2.1 General Rules
 
-* All feature or buf fixes **must be tested** by one or more unit-tests.
+* All feature or bug fixes **must be tested** by one or more unit-tests.
 * All API must be documented.
+* Do not submmit broken code to version control system.
 
 ### 2.2 Naming Conventions
 
@@ -27,7 +28,7 @@
   * Classes that inherit from `UObject` are prefixed by `U` 
   * <!--TODO-->
 
-## 3 Unreal Assets
+## 3. Unreal Assets
 
 ## 3.1 Asset Naming Conventions
 
@@ -38,7 +39,7 @@ Most things are prefixed with prefixes being generally an acronym of the asset t
 ### 3.1.1 Base Asset Name `Prefix_BaseAssetName_Variant_Suffix`
 
 * `BaseAssetName` should be determined by a **short and easily recognizable name** that represents logical name related to the context of this group of assets. For example, if you have a character named Bob, all of Bob's assets should have the `BaseAssetName` of `Bob`.
-* `Prefix` and `Suffix` are to be determined by the asset type through the following [3.1.2 Asset Name Modifiers](#3.1.2-asset-name-modifiers)
+* `Prefix` and `Suffix` are to be determined by the asset type through the following [3.1.2 Asset Name Modifiers](#3.1.2)
 * `Variant` is either a short and easily recognizable name that represents logical grouping of assets that are a subset of an asset's base name for unique and specific variations of assets, or **a two digital number starting at `01`** for unique but generic variations of assets. 
 * Variant names can be chained together depending on how your asset variants are made.
 
@@ -254,7 +255,7 @@ Equally important as asset names, the directory structure style of a project sho
 
 There are multiple ways to lay out the content of a UE4 project. In this style, we will be using a structure that relies more on filtering and search abilities of the Content Browser for those working with assets to find assets of a specific type instead of another common structure that groups asset types with folders.
 
-> If you are using the prefix [naming convention](#3.1.2-asset-name-modifiers) above, using folders to contain assets of similar types such as `Meshes`, `Textures`, and `Materials` is a redundant practice as asset types are already both sorted by prefix as well as able to be filtered in the content browser.
+> If you are using the prefix [naming convention](#3.1.2) above, using folders to contain assets of similar types such as `Meshes`, `Textures`, and `Materials` is a redundant practice as asset types are already both sorted by prefix as well as able to be filtered in the content browser.
 
 Here is a example project content structure:
 
@@ -322,7 +323,7 @@ PascalCase refers to starting a name with a capital letter and then instead of u
 
 ##### 3.3.1.2 Never Use Spaces
 
-Re-enforcing [3.3.1.1 Always Use PascalCase](#3.3.1.1-always-use-pascalcase), never use spaces. Spaces can cause various engineering tools and batch processes to fail. Ideally, your project's root also contains no spaces and is located somewhere such as `D:\Project` instead of `C:\Users\My Name\My Documents\Unreal Projects`.
+Re-enforcing [3.3.1.1 Always Use PascalCase](#3.3.1.1), never use spaces. Spaces can cause various engineering tools and batch processes to fail. Ideally, your project's root also contains no spaces and is located somewhere such as `D:\Project` instead of `C:\Users\My Name\My Documents\Unreal Projects`.
 
 ##### 3.3.1.3 Never Use Unicode Characters And Other Symbols (Including Chinese)
 
@@ -380,7 +381,7 @@ When adhering to [3.3.2](#3.3.2), the worst marketplace conflict you can have is
 
 If your project plans to release DLC or has multiple sub-projects associated with it that may either be migrated out or simply not cooked in a build, assets relating to these projects should have their own separate top level content folder. This make cooking DLC separate from main project content far easier. Sub-projects can also be migrated in and out with minimal effort. If you need to change a material of an asset or add some very specific asset override behavior in a patch, you can easily put these changes in a patch folder and work safely without the chance of breaking the core project.
 
-### 3.3.3 Use Developers Folder For Local Testing
+### 3.3.3 Use `Developers` Folder For Local Testing
 
 During a project's development, it is very common for team members to have a sort of 'sandbox' where they can experiment freely without risking the core project. Because this work may be ongoing, these team members may wish to put their assets on a project's source control server. Not all teams require use of Developer folders, but ones that do use them often run into a common problem with assets submitted to source control.
 
@@ -424,7 +425,7 @@ Not doing this also prevents the inevitability of someone putting a static mesh 
 
 ### 3.3.7 Very Large Asset Sets Get Their Own Folder Layout
 
-This can be seen as a pseudo-exception to [3.3.7](#3.3.7).
+This can be seen as a pseudo-exception to [3.3.6](#3.3.6).
 
 There are certain asset types that have a huge volume of related files where each asset has a unique purpose. The two most common are Animation and Audio assets. If you find yourself having 15+ of these assets that belong together, they should be together.
 
@@ -461,7 +462,130 @@ If you find that the content browser has an empty folder you can't delete, you s
 
 ## 3.4 Blueprints
 
-<!--TODO compiling, variables, functions, graphs, etc...-->
+This section will focus on Blueprint classes and their internals. When possible, style rules conform to [Epic's Coding Standard](https://docs.unrealengine.com/latest/INT/Programming/Development/CodingStandard).
+
+Remember: Blueprinting badly bears blunders, beware! 
+
+<!--TODO-->
+
+### 3.4.1 Compiling
+
+All blueprints should compile with zero warnings and zero errors. You should fix blueprint warnings and errors immediately as they can quickly cascade into very scary unexpected behavior.
+
+**Do *not* submit broken blueprints to source control.** If you must store them on source control, shelve them instead.
+
+Broken blueprints can cause problems that manifest in other ways, such as broken references, unexpected behavior, cooking failures, and frequent unneeded recompilation. A broken blueprint has the power to break your entire game.
+
+### 3.4.2 Variables
+
+The words `variable` and `property` may be used interchangeably.
+
+#### 3.4.2.1 Naming
+
+##### 3.4.2.1.1 Nouns
+
+All non-boolean variable names must be clear, unambiguous, and descriptive nouns.
+
+##### 3.4.2.1.2 PascalCase
+
+All non-boolean variable should be in the form of PascalCase. 
+
+For example: `Score` ,`Kills`, `TargetPlayer`, `Range`, `CrosschairColor`, `AbilityID`.
+
+##### 3.4.2.1.3 Boolean `b` Prefix
+
+All bollean should be named in PascalCase but prefixed with a lowercase `b`.
+
+For example: use `bDead` instead of `dead`, use `bEvil` instead of `evil`.
+
+UE4 Blueprint editors know not to include the `b` in user-friendly displays of the variable.
+
+##### 3.4.2.1.4 Boolean Names
+
+###### 3.4.2.1.4.1 General And Independent State Information
+
+All booleans should be named as descriptive adjectives when possible if representing general information. Do not include words that phrase the variable as a question, such as `Is`. This is reserved for functions.
+
+Example: Use `bDead` and `bHostile` **not** `bIsDead` and `bIsHostile`.
+
+Try to not use verbs such as `bRunning`. Verbs tend to lead to complex states.
+
+###### 3.4.2.1.4.2 Complex States
+
+Do not to use booleans to represent complex and/or dependent states. This makes state adding and removing complex and no longer easily readable. Use an enumeration instead.
+
+Example: When defining a weapon, do **not** use `bReloading` and `bEquipping` if a weapon can't be both reloading and equipping. Define an enumeration named `EWeaponState` and use a variable with this type named `WeaponState` instead. This makes it far easier to add new states to weapons.
+
+For example: Do **not** use `bRunning` if you also need `bWalking` or `bSprinting`. This should be defined as an enumeration with clearly defined state names.
+
+##### 3.4.2.1.5 Considered Context
+
+All variable names must not be redundant with their context as all variable references in Blueprint will always have context.
+
+For example, consider a Blueprint called `BP_PlayerCharacter`.
+
+| Bad                 | Good         |
+| ------------------- | ------------ |
+| PlayerScore         | Score        |
+| PlayerKill          | Kill         |
+| MyTargetPlayer      | TargetPlayer |
+| MyCharacterName     | Name         |
+| CharacterSkills     | Skills       |
+| ChosenCharacterSkin | Skin         |
+
+All of the variables on the left side are named redundantly. It is implied that the variable is representative of the `BP_PlayerCharacter` it belongs to because it is `BP_PlayerCharacter` that is defining these variables.
+
+##### 3.4.2.1.6 Do *Not* Include Atomic Type Names
+
+Atomic or primitive variables are variables that represent data in their simplest form, such as booleans, integers, floats, and enumerations.
+
+Strings and vectors are considered atomic in terms of style when working with Blueprints, however they are technically not atomic.
+
+> While vectors consist of three floats, vectors are often able to be manipulated as a whole, same with rotators.
+
+> Do *not* consider Text variables as atomic, they are secretly hiding localization functionality. The atomic type of a string of characters is `String`, not `Text`.
+
+Atomic variables should not have their type name in their name.
+
+Example: Use `Score`, `Kills`, and `Description` **not** `ScoreFloat`, `FloatKills`, `DescriptionString`.
+
+The only exception to this rule is when a variable represents 'a number of' something to be counted *and* when using a name without a variable type is not easy to read.
+
+Example: A fence generator needs to generate X number of posts. Store X in `NumPosts` or `PostsCount` instead of `Posts` as `Posts` may potentially read as an Array of a variable type named `Post`.
+
+##### 3.4.2.1.7 Do Include Non-Atomic Type Names
+
+Non-atomic or complex variables are variables that represent data as a collection of atomic variables. Structs, Classes, Interfaces, and primitives with hidden behavior such as `Text` and `Name` all qualify under this rule.
+
+> While an Array of an atomic variable type is a list of variables, Arrays do not change the 'atomicness' of a variable type.
+
+These variables should include their type name while still considering their context.
+
+If a class owns an instance of a complex variable, i.e. if a `BP_PlayerCharacter` owns a `BP_Hat`, it should be stored as the variable type as without any name modifications.
+
+Example: Use `Hat`, `Flag`, and `Ability` **not** `MyHat`, `MyFlag`, and `PlayerAbility`.
+
+If a class does not own the value a complex variable represents, you should use a noun along with the variable type.
+
+Example: If a `BP_Turret` has the ability to target a `BP_PlayerCharacter`, it should store its target as `TargetPlayer` as when in the context of `BP_Turret` it should be clear that it is a reference to another complex variable type that it does not own.
+
+##### 3.4.2.1.8 Arrays
+
+Arrays follow the same naming rules as above, but should be named as a plural noun.
+
+For example: Use `Targets`, `Hats`, and `EnemyPlayers`, **not** `TargetList`, `HatArray`, `EnemyPlayerArray`.
+
+#### 3.4.2.2 Editable Variable
+
+All variables that are safe to change the value of in order to configure behavior of a blueprint should be marked as `Editable`.
+
+Conversely, all variables that are not safe to change or should not be exposed to designers should *not* be marked as editable, unless for engineering reasons the variable must be marked as `Expose On Spawn`.
+
+Do not arbitrarily mark variables as `Editable`.
+
+<!--TODO finish this section-->
+
+<!--TODO naming(done), editable, categories, access, advanced, transient, config, etc...-->
 
 ## 3.5 Static Meshes
 
@@ -475,7 +599,11 @@ If you find that the content browser has an empty folder you can't delete, you s
 
 <!--TODO ?-->
 
-## 4 Version Control (Git)
+## 3.8 Media Format
+
+<!--TODO ?-->
+
+## 4. Version Control (Git)
 
 ### 4.1 General Rules
 
@@ -484,6 +612,9 @@ If you find that the content browser has an empty folder you can't delete, you s
 * All the commit messages should follow [Commit Message Rules](#4.2).
 * **Never force push.**
 * Inform maintainer before performing a merge operation.
+* Do not consider the version control system as a cloud drive.
+* One feature( or fix), one commit.
+* Do not submmit unfinished work. 
 
 ### 4.2 Commit Messages
 
@@ -556,3 +687,6 @@ The footer should contain any information about **Breaking Changes** and is also
 
 **Breaking Changes** should start with the word `BREAKING CHANGE:` with a space or two newlines. The rest of the commit message is then used for this.
 
+---
+
+Author 方泓睿 
