@@ -391,7 +391,7 @@ If these modular assets were placed in a Developer folder, the world builder sho
 
 Once the assets are ready for use, an artist simply has to move the assets into the project specific folder and fix up redirectors. This is essentially 'promoting' the assets from experimental to production.
 
-### 3.3.4 AllMap Files Belong In A Folder Called Maps
+### 3.3.4 All Map Files Belong In A Folder Called Maps
 
 Map files are incredibly special and it is common for every project to have its own map naming system, especially if they work with sub-levels or streaming levels. No matter what system of map organization is in place for the specific project, all levels should belong in `/Content/Project/Maps`.
 
@@ -583,9 +583,81 @@ Conversely, all variables that are not safe to change or should not be exposed t
 
 Do not arbitrarily mark variables as `Editable`.
 
-<!--TODO finish this section-->
+##### 3.4.2.2.1 Tooltips
 
-<!--TODO naming(done), editable, categories, access, advanced, transient, config, etc...-->
+All `Editable` variables, including those marked editable just so they can be marked as `Expose On Spawn`, should have a description in their `Tooltip` fields that explains how changing this value affects the behavior of the blueprint.
+
+##### 3.4.2.2.2 Slider And Value Ranges
+
+All `Editable` variables should make use of slider and value ranges if there is ever a value that a variable should *not* be set to.
+
+Example: A blueprint that generates fence posts might have an editable variable named `PostsCount` and a value of -1 would not make any sense. Use the range fields to mark 0 as a minimum.
+
+If an editable variable is used in a Construction Script, it should have a reasonable Slider Range defined so that someone can not accidentally assign it a large value that could crash the editor.
+
+A Value Range only needs to be defined if the bounds of a value are known. While a Slider Range prevents accidental large number inputs, an undefined Value Range allows a user to specify a value outside the Slider Range that may be considered 'dangerous' but still valid.
+
+#### 3.4.2.3 Categories
+
+If a class has only a small number of variables, categories are not required.
+
+If a class has a moderate amount of variables (5-10), all `Editable` variables should have a non-default category assigned. A common category is `Config`.
+
+If a class has a large amount of variables, all `Editable` variables should be categorized into sub-categories using the category `Config` as the base category. Non-editable variables should be categorized into descriptive categories describing their usage.
+
+> You can define sub-categories by using the pipe character `|`, i.e. `Config | Animations`.
+
+Example: A weapon class set of variables might be organized as:
+
+```
+|-- Config
+|	|-- Animations
+|	|-- Effects
+|	|-- Audio
+|	|-- Recoil
+|	|-- Timings
+|-- Animations
+|-- State
+|-- Visuals
+```
+
+#### 3.4.2.4 Variable Access Level
+
+In C++, variables have a concept of access level. Public means any code outside the class can access the variable. Protected means only the class and any child classes can access this variable internally. Private means only this class and no child classes can access this variable.
+
+Blueprints do not have a defined concept of protected access currently.
+
+Treat `Editable` variables as public variables. Treat non-editable variables as protected variables.
+
+##### 3.4.2.4.1 Private Variables
+
+Unless it is known that a variable should only be accessed within the class it is defined and never a child class, do not mark variables as private. Until variables are able to be marked `protected`, reserve private for when you absolutely know you want to restrict child class usage.
+
+#### 3.4.2.5 Advanced Display
+
+If a variable should be editable but often untouched, mark it as `Advanced Display`. This makes the variable hidden unless the advanced display arrow is clicked.
+
+To find the `Advanced Display` option, it is listed as an advanced displayed variable in the variable details list.
+
+#### 3.4.2.6 Transient Variables
+
+Transient variables are variables that do not need to have their value saved and loaded and have an initial value of zero or null. This is useful for references to other objects and actors who's value isn't known until run-time. This prevents the editor from ever saving a reference to it, and speeds up saving and loading of the blueprint class.
+
+Because of this, all transient variables should always be initialized as zero or null. To do otherwise would result in hard to debug errors.
+
+#### 3.4.2.7 Advanced Display
+
+If a variable should be editable but often untouched, mark it as `Advanced Display`. This makes the variable hidden unless the advanced display arrow is clicked.
+
+To find the `Advanced Display` option, it is listed as an advanced displayed variable in the variable details list.
+
+#### 3.4.2.8 Config Variables
+
+Do not use the `Config Variable` flag. This makes it harder for designers to control blueprint behavior. Config variables should only be used in C++ for rarely changed variables. Think of them as `Advanced Advanced Display` variables.
+
+### 3.4.3 Functions, Events and Event Dispatchers
+
+<!--TODO naming, return node, number of nodes restriction, description, categorize-->
 
 ## 3.5 Static Meshes
 
