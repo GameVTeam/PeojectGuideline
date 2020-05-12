@@ -589,7 +589,28 @@ Do not arbitrarily mark variables as `Editable`.
 
 ## 3.5 Static Meshes
 
-<!--TODO ?-->
+Accroding to the chosen workflow, all meshes created should be exchange in the following formats:
+
+| File format     | Usage        |
+| --------------- | ------------ |
+| .c4d .3ds etc.  | Original project files, format unlimited  |
+| .obj            | Static mesh exported for UV unfolding     |
+| .fbx            | Animated/Static model for the game engine |
+
+Inside the model file, components should be arranged in clear level structure.
+
+Root node of model **MUST** be named as the model file.
+The naming of its child nodes should be **In English** and concise.
+The structure is suppose to be as simple as possible, redundant levels should be merge into one.
+
+Here is an example of model structure:
+
+```
+|-- FrontDoor.fbx
+    |-- FrontDoor
+        |-- Door
+        |-- Frame
+```
 
 ## 3.6 Maps / Levels
 
@@ -597,15 +618,49 @@ Do not arbitrarily mark variables as `Editable`.
 
 ## 3.7 Textures
 
-<!--TODO ?-->
+All textures created should be exchange in the following formats:
+
+| File format     | Usage        |
+| --------------- | ------------ |
+| .psd .ai etc.   | Original project files, format unlimited  |
+| .png            | For small textures (e.g. UI, Effects)     |
+| .tif            | For large textures (e.g. Scene, Models)   |
+
+Textures should be named as the part that it applies to.
+
+Textures **MUST** be with the model file while exporting,
+here is an example of file structure.
+
+```
+|-- FrontDoor (Folder)
+    |-- Tex (Folder)
+        |-- Door.tif
+        |-- Frame.tif
+    |-- FrontDoor .fbx
+```
 
 ## 3.8 Animations
 
-<!--TODO-->
+<!--TODO add contents -->
+Use .fbx as the only export format of static meshes.
+The proper way of using .fbx files:
+1. Files->Import to level, Import. (Simply drop .fbx file into the explorer can lead to animation data lost, using datasmith plugin would be a better option.)
+2. Don't forget to generate physical resources. (Animation asset->Create->Create physical resource.)
+3. The function to play .fbx animation sequence is categoried in Component->Animation.
+4. Keep the Z-Axis pointing upwards when importing resources.
 
 ## 3.9 Media Format
 
-<!--TODO ?-->
+<!--TODO add contents -->
+All multi-media contents created should be exchange in the following formats:
+
+| File format     | Usage        |
+| --------------- | ------------ |
+| .aep .ses etc.  | Original project files, format unlimited  |
+| .ogg            | For short audios (e.g. UI, Effects)       |
+| .mp3            | For long audios (e.g. Background music)   |
+| .gif            | For short videos (e.g. Microwave UI)      |
+| .mp4            | For long videos (e.g. TV show)            |
 
 ## 4. Version Control (Git)
 
